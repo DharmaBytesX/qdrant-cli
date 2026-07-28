@@ -1,3 +1,5 @@
+import os
+
 import click
 from qdrant_client.http.models import PointStruct
 
@@ -12,7 +14,7 @@ from qdrant_cli.client import (
 from qdrant_cli.client import (
     search as qdrant_search,
 )
-from qdrant_cli.embeddings import embed, embed_batch
+from qdrant_cli.embeddings import embed, embed_batch, get_embedder
 from qdrant_cli.file_processor import process_file_chunked
 from qdrant_cli.output import Output, Timing, timer
 
@@ -30,11 +32,25 @@ from qdrant_cli.output import Output, Timing, timer
     default=False,
     help="Show timing statistics",
 )
+@click.option(
+    "--embedding-model", "-e",
+    default=None,
+    help=(
+        "Embedding model spec. "
+        "'local' (default), 'local:model_name', or "
+        "'openrouter:model_name'. "
+        "Can also be set via EMBEDDING_MODEL env var."
+    ),
+)
 @click.pass_context
-def cli(ctx: click.Context, output: str, stats: bool):
+def cli(ctx: click.Context, output: str, stats: bool, embedding_model: str | None):
     ctx.ensure_object(dict)
     ctx.obj["output_fmt"] = output
     ctx.obj["show_stats"] = stats
+
+    if embedding_model is not None:
+        os.environ["EMBEDDING_MODEL"] = embedding_model
+    get_embedder()
 
 
 def _make_out(ctx: click.Context) -> tuple[Output, Timing | None]:
@@ -68,13 +84,15 @@ def collections(ctx: click.Context):
 def add_collection(ctx: click.Context, name: str):
     """Create a new collection."""
     out, t = _make_out(ctx)
+    dim = get_embedder().dimension
     with timer("create_collection", t) if t else _nullcontext():
-        created = create_collection(name)
+        created = create_collection(name, size=dim)
     out.status({
-        "message": f"Collection '{name}' created." if created
+        "message": f"Collection '{name}' created (dim={dim})." if created
                    else f"Collection '{name}' already exists.",
         "collection": name,
         "status": "created" if created else "exists",
+        "dimension": dim,
     })
 
 

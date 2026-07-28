@@ -4,6 +4,8 @@ vars:
   VENV: .venv
   PYTHON: '{{.VENV}}/bin/python'
   RUFF: '{{.VENV}}/bin/ruff'
+  ALLURE_RESULTS: allure-results
+  ALLURE_REPORT: allure-report
 
 tasks:
   install:
@@ -27,24 +29,46 @@ tasks:
       - '{{.RUFF}} format src/ tests/'
 
   test-full:
-    desc: Run all tests
+    desc: Run all tests (with Allure results)
     cmds:
-      - '{{.PYTHON}} -m pytest tests/ -v --tb=short'
+      - '{{.PYTHON}} -m pytest tests/ -v --tb=short --alluredir={{.ALLURE_RESULTS}}'
 
   test-client:
     desc: Run client tests only
     cmds:
-      - '{{.PYTHON}} -m pytest tests/test_client.py -v --tb=short'
+      - '{{.PYTHON}} -m pytest tests/test_client.py -v --tb=short --alluredir={{.ALLURE_RESULTS}}'
 
   test-embeddings:
     desc: Run embedding tests only
     cmds:
-      - '{{.PYTHON}} -m pytest tests/test_embeddings.py -v --tb=short'
+      - '{{.PYTHON}} -m pytest tests/test_embeddings.py -v --tb=short --alluredir={{.ALLURE_RESULTS}}'
 
   test-file:
     desc: Run file processor tests only
     cmds:
-      - '{{.PYTHON}} -m pytest tests/test_file_processor.py -v --tb=short'
+      - '{{.PYTHON}} -m pytest tests/test_file_processor.py -v --tb=short --alluredir={{.ALLURE_RESULTS}}'
+
+  allure-report:
+    desc: Generate Allure report from existing results
+    cmds:
+      - npx allure generate {{.ALLURE_RESULTS}} -o {{.ALLURE_REPORT}}
+
+  allure-open:
+    desc: Open Allure report in browser
+    cmds:
+      - npx allure open {{.ALLURE_REPORT}}
+
+  allure-watch:
+    desc: Watch for results and live-update report
+    cmds:
+      - npx allure watch {{.ALLURE_RESULTS}}
+
+  allure-run:
+    desc: Run all tests and generate Allure report
+    cmds:
+      - task: test-full
+      - task: allure-report
+    ignore_error: true
 
   check-all:
     desc: Run lint and all tests

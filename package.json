@@ -1,0 +1,26 @@
+{
+  "name": "qdrant-cli",
+  "version": "1.0.0",
+  "description": "CLI tool to interact with a [Qdrant](https://qdrant.tech) vector database. Designed for both **human operators** and **AI agents** — JSON output mode and structured timing make it easy to integrate into agentic workflows.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DharmaBytesX/qdrant-cli.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DharmaBytesX/qdrant-cli/issues"
+  },
+  "homepage": "https://github.com/DharmaBytesX/qdrant-cli#readme",
+  "devDependencies": {
+    "allure": "^3.14.3"
+  }
+}

@@ -6,6 +6,7 @@ build-backend = "hatchling.build"
 name = "qdrant-cli"
 version = "0.2.0"
 description = "CLI tool to interact with Qdrant vector database"
+license = "MIT"
 requires-python = ">=3.10"
 dependencies = [
     "click>=8.1",

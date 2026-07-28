@@ -1,0 +1,53 @@
+version: "3"
+
+vars:
+  VENV: .venv
+  PYTHON: '{{.VENV}}/bin/python'
+  RUFF: '{{.VENV}}/bin/ruff'
+
+tasks:
+  install:
+    desc: Install the project in editable mode
+    cmds:
+      - '{{.PYTHON}} -m pip install -e .'
+
+  lint:
+    desc: Run ruff linter
+    cmds:
+      - '{{.RUFF}} check src/ tests/'
+
+  lint-fix:
+    desc: Run ruff with automatic fixes
+    cmds:
+      - '{{.RUFF}} check --fix src/ tests/'
+
+  format:
+    desc: Run ruff formatter
+    cmds:
+      - '{{.RUFF}} format src/ tests/'
+
+  test-full:
+    desc: Run all tests
+    cmds:
+      - '{{.PYTHON}} -m pytest tests/ -v --tb=short'
+
+  test-client:
+    desc: Run client tests only
+    cmds:
+      - '{{.PYTHON}} -m pytest tests/test_client.py -v --tb=short'
+
+  test-embeddings:
+    desc: Run embedding tests only
+    cmds:
+      - '{{.PYTHON}} -m pytest tests/test_embeddings.py -v --tb=short'
+
+  test-file:
+    desc: Run file processor tests only
+    cmds:
+      - '{{.PYTHON}} -m pytest tests/test_file_processor.py -v --tb=short'
+
+  check-all:
+    desc: Run lint and all tests
+    cmds:
+      - task: lint
+      - task: test-full

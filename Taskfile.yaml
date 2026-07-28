@@ -9,9 +9,9 @@ vars:
 
 tasks:
   install:
-    desc: Install the project in editable mode
+    desc: Install the project in editable mode (with test deps)
     cmds:
-      - '{{.PYTHON}} -m pip install -e .'
+      - '{{.PYTHON}} -m pip install -e ".[test]"'
 
   lint:
     desc: Run ruff linter

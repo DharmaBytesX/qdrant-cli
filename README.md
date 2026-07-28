@@ -32,7 +32,7 @@ structured timing make it easy to integrate into agentic workflows.
 
 ```bash
 python -m venv .venv
-.venv/bin/pip install -e .
+.venv/bin/pip install -e ".[test]"   # includes test dependencies (pytest, allure-pytest)
 
 # Optional: install Allure 3 CLI for test reports
 npm install -g allure
